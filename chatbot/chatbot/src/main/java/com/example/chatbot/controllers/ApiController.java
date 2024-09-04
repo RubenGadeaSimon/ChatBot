@@ -1,0 +1,27 @@
+package com.example.chatbot.controllers;
+
+import com.example.chatbot.business.ApiService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+
+@RestController
+@RequestMapping("/api/gpt")
+public class ApiController {
+
+    @Autowired
+    ApiService apiService;
+
+    @PostMapping("/customer-request")
+    public ResponseEntity<?> handleCustomerRequest(@RequestBody String message) {
+        message = apiService.customerRequestMessage();
+        return ResponseEntity.status(200).body("El mensaje es: " + message);
+        //llamada a servicio
+        //llamar a metodo con post a gpt
+        //devuelve al svc el contenido de la respuesta
+        //el servicio devuelve aqui el mensaje y se devuelve en responseentity
+    }
+}
