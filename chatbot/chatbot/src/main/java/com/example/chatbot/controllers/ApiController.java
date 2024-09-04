@@ -18,6 +18,7 @@ public class ApiController {
     @PostMapping("/customer-request")
     public ResponseEntity<?> handleCustomerRequest(@RequestBody String message) {
         message = apiService.customerRequestMessage();
+        apiService.requestFromTwilio(message);
         return ResponseEntity.status(200).body("El mensaje es: " + message);
         //llamada a servicio
         //llamar a metodo con post a gpt
