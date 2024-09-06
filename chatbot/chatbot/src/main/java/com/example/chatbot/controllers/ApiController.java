@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/gpt")
 public class ApiController {
@@ -13,14 +15,18 @@ public class ApiController {
     ApiService apiService;
 
     @PostMapping("/customer-request")
-    public ResponseEntity<?> handleCustomerRequest(@RequestBody String message) {
-        message = apiService.customerRequestMessage();
-        apiService.requestFromTwilio(message);
+    public ResponseEntity<?> handleCustomerRequest(@RequestBody Map<String, Object> requestBody) {
+        String message = "";
+        try{
+            System.out.println("Received JSON: " + requestBody);
+            message = "aux";
+            String messageFromAI = apiService.customerRequestMessage(message);
+            apiService.requestFromTwilio(messageFromAI);
+
+        }catch(Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
         return ResponseEntity.status(200).body("El mensaje es: " + message);
-        //llamada a servicio
-        //llamar a metodo con post a gpt
-        //devuelve al svc el contenido de la respuesta
-        //el servicio devuelve aqui el mensaje y se devuelve en responseentity
     }
 
     @GetMapping("/holamundo")
@@ -34,5 +40,6 @@ public class ApiController {
         System.out.println("hola mundo2");
         return ResponseEntity.status(200).body("Hola mundo");
     }
+
 
 }
