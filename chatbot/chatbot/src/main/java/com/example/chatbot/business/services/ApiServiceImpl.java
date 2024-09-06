@@ -46,7 +46,7 @@ public class ApiServiceImpl implements ApiService{
         // Construir la petición HTTP
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))                        // URI del servicio
-                .header("Content-Type", "application/json")  // Cabecera indicando que el cuerpo es JSON
+                .header("Content-Type", "application/x-www-form-urlencoded")  // Cabecera indicando que el cuerpo es JSON
                 .POST(BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))  // Método POST con el cuerpo de la petición
                 .build();
 

@@ -15,18 +15,14 @@ public class ApiController {
     ApiService apiService;
 
     @PostMapping("/customer-request")
-    public ResponseEntity<?> handleCustomerRequest(@RequestBody Map<String, Object> requestBody) {
-        String message = "";
+    public ResponseEntity<?> handleCustomerRequest(@RequestBody String Body) {
         try{
-            System.out.println("Received JSON: " + requestBody);
-            message = "aux";
-            String messageFromAI = apiService.customerRequestMessage(message);
+            String messageFromAI = apiService.customerRequestMessage(Body);
             apiService.requestFromTwilio(messageFromAI);
-
         }catch(Exception e){
             System.out.println("Error: " + e.getMessage());
         }
-        return ResponseEntity.status(200).body("El mensaje es: " + message);
+        return ResponseEntity.status(200).body("El mensaje es: " + Body);
     }
 
     @GetMapping("/holamundo")
