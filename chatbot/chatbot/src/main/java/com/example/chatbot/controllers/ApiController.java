@@ -24,7 +24,7 @@ public class ApiController {
     }
 
     @GetMapping("/holamundo")
-    public ResponseEntity<?> holamundo(@RequestBody String message) {
+    public ResponseEntity<?> holamundo() {
         return ResponseEntity.status(200).body("Hola mundo");
     }
 
