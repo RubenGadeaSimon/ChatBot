@@ -15,14 +15,29 @@ public class ApiController {
     ApiService apiService;
 
     @PostMapping("/customer-request")
-    public ResponseEntity<?> handleCustomerRequest(@RequestBody String Body) {
-        try{
-            String messageFromAI = apiService.customerRequestMessage(Body);
+    public ResponseEntity<?> handleCustomerRequest(@RequestParam Map<String, String> params) {
+        try {
+            // Mostrar el JSON en la consola
+            //System.out.println("Received parameters: " + params);
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                System.out.println("Key: " + key + ", Value: " + value + ", Type of Value: " + value.getClass().getName());
+            }
+
+            // Extraer el mensaje del parámetro
+            String message = params.get("Body"); // Cambia "prompt" por el nombre del campo que esperas
+            System.out.println("Extracted message: " + message);
+
+            // Suponiendo que apiService.customerRequestMessage() y apiService.requestFromTwilio() están definidos en tu servicio
+            String messageFromAI = apiService.customerRequestMessage(message);
             apiService.requestFromTwilio(messageFromAI);
-        }catch(Exception e){
+
+        } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+            return ResponseEntity.status(500).body("Internal Server Error");
         }
-        return ResponseEntity.status(200).body("El mensaje es: " + Body);
+        return ResponseEntity.ok("El mensaje es: " + params);
     }
 
     @GetMapping("/holamundo")
