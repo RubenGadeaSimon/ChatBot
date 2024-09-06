@@ -2,10 +2,7 @@ package com.example.chatbot.controllers;
 
 import com.example.chatbot.business.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 @RestController
@@ -25,4 +22,10 @@ public class ApiController {
         //devuelve al svc el contenido de la respuesta
         //el servicio devuelve aqui el mensaje y se devuelve en responseentity
     }
+
+    @GetMapping("/holamundo")
+    public ResponseEntity<?> holamundo(@RequestBody String message) {
+        return ResponseEntity.status(200).body("Hola mundo");
+    }
+
 }
