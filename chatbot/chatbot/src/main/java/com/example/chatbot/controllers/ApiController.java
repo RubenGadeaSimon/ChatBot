@@ -35,6 +35,7 @@ public class ApiController {
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+            System.out.println("Excepcion: " + e);
             return ResponseEntity.status(500).body("Internal Server Error");
         }
         return ResponseEntity.ok("El mensaje es: " + params);

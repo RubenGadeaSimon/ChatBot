@@ -49,10 +49,10 @@ public class ApiServiceImpl implements ApiService{
                 .header("Content-Type", "application/json")  // Cabecera indicando que el cuerpo es JSON
                 .POST(BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))  // Método POST con el cuerpo de la petición
                 .build();
-
+        System.out.println("linea 52");
         // Enviar la petición y recibir la respuesta
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
+        System.out.println("linea 55");
         // Parsear la respuesta JSON utilizando la clase JSONObject de org.json
         JSONObject jsonResponse = new JSONObject(response.body());
 
