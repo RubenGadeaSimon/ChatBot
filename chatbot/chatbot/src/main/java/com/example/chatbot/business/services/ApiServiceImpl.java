@@ -27,7 +27,7 @@ public class ApiServiceImpl implements ApiService{
     public void requestFromTwilio(String messageReceived) {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         Message message = Message.creator(
-                        new com.twilio.type.PhoneNumber("whatsapp:+34672259179"),
+                        new com.twilio.type.PhoneNumber("whatsapp:+34685571010"),
                         new com.twilio.type.PhoneNumber("whatsapp:+14155238886"),
                         messageReceived)
                         .create();
