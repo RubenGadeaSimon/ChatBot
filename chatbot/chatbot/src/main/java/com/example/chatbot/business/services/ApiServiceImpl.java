@@ -17,7 +17,7 @@ public class ApiServiceImpl implements ApiService{
     @Value("${app.twilio.account.ID}")
     private String ACCOUNT_SID;
 
-    @Value("${app.twilio.API.key}")
+    @Value("${app.twilio.authtoken}")
     private String AUTH_TOKEN;
 
     public String customerRequestMessage(){
