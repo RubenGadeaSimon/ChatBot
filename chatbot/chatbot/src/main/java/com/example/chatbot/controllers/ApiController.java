@@ -53,5 +53,18 @@ public class ApiController {
         return ResponseEntity.status(200).body("Hola mundo");
     }
 
+    @GetMapping("/holaollama")
+    public ResponseEntity<?> holaollama() {
+        System.out.println("hola ollama");
+        String resp = "";
+        try{
+            resp = apiService.holaollama();
+
+        }catch(Exception e){
+            System.out.println("error ollama: " + e);
+        }
+        return ResponseEntity.status(200).body(resp);
+    }
+
 
 }

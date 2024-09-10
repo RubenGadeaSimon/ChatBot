@@ -22,14 +22,16 @@ public class ApiServiceImpl implements ApiService{
     @Value("${app.twilio.authtoken}")
     private String AUTH_TOKEN;
 
+    // URL del servicio REST
+    //@Value("${ollama.url}")
+    private String url = "http://ollama.paco-namespace.svc.cluster.local:11434/api/generate";
+    private String urlHola= "http://ollama.paco-namespace.svc.cluster.local:11434";
+
     public String customerRequestMessage2(){
         return "String devuelto desde el servicio";
     }
 
     public String customerRequestMessage(String message) throws Exception {
-        // URL del servicio REST
-        String url = "http://localhost:11434/api/generate";
-
         // Cuerpo de la petición en formato JSON
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("model", "llama3.1:latest");
@@ -71,5 +73,18 @@ public class ApiServiceImpl implements ApiService{
                         messageReceived)
                         .create();
         System.out.println(message.getSid());
+    }
+
+    public String holaollama() throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(urlHola))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("Response Code: " + response.statusCode());
+        System.out.println(response.body());
+        return response.body();
     }
 }
