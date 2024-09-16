@@ -1,9 +1,11 @@
 package com.example.chatbot.controllers;
 
 import com.example.chatbot.business.ApiService;
+import com.example.chatbot.db.DBconection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import com.example.chatbot.db.DBconection;
 
 import java.util.Map;
 
@@ -14,8 +16,11 @@ public class ApiController {
     @Autowired
     ApiService apiService;
 
+    private DBconection dBconection = new DBconection();
+
     @PostMapping("/customer-request")
     public ResponseEntity<?> handleCustomerRequest(@RequestParam Map<String, String> params) {
+        String messageFromAI ="";
         try {
             // Mostrar el JSON en la consola
             //System.out.println("Received parameters: " + params);
@@ -29,8 +34,9 @@ public class ApiController {
             String message = params.get("Body"); // Cambia "prompt" por el nombre del campo que esperas
             System.out.println("Extracted message: " + message);
 
+            message= apiService.processMessage(message);
             // Suponiendo que apiService.customerRequestMessage() y apiService.requestFromTwilio() están definidos en tu servicio
-            String messageFromAI = apiService.customerRequestMessage(message);
+            messageFromAI = apiService.customerRequestMessage(message);
             apiService.requestFromTwilio(messageFromAI);
 
         } catch (Exception e) {
@@ -38,7 +44,7 @@ public class ApiController {
             System.out.println("Excepcion: " + e);
             return ResponseEntity.status(500).body("Internal Server Error");
         }
-        return ResponseEntity.ok("El mensaje es: " + params);
+        return ResponseEntity.ok("El mensaje es: " + messageFromAI);
     }
 
     @GetMapping("/holamundo")
@@ -66,5 +72,27 @@ public class ApiController {
         return ResponseEntity.status(200).body(resp);
     }
 
+    @PostMapping("/doquery")
+    public ResponseEntity<?> doquery(@RequestBody Map<String, String> params) {
+        System.out.println("Query en proceso...");
+        String resp = "";
+        try{
+            // Mostrar el JSON en la consola
+            //System.out.println("Received parameters: " + params);
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                System.out.println("Key: " + key + ", Value: " + value + ", Type of Value: " + value.getClass().getName());
+            }
+            // Extraer el mensaje del parámetro
+            String message = params.get("query");
+
+            dBconection.connectToDatabase(message);
+
+        }catch(Exception e){
+            System.out.println("error ollama: " + e);
+        }
+        return ResponseEntity.status(200).body(resp);
+    }
 
 }
