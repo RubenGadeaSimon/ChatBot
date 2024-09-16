@@ -1,5 +1,6 @@
 package com.example.chatbot.business.services;
 
+import com.example.chatbot.db.DBconection;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 
 @Service
 public class ApiServiceImpl implements ApiService{
+    private DBconection dBconection = new DBconection();
     // Find your Account Sid and Token at twilio.com/console
     @Value("${app.twilio.account.ID}")
     private String ACCOUNT_SID;
@@ -25,6 +27,7 @@ public class ApiServiceImpl implements ApiService{
     // URL del servicio REST
     //@Value("${ollama.url}")
     private String url = "http://ollama.paco-namespace.svc.cluster.local:11434/api/generate";
+    //private String url = "http://localhost:11434/api/generate";
     private String urlHola= "http://ollama.paco-namespace.svc.cluster.local:11434";
 
     public String customerRequestMessage2(){
@@ -51,17 +54,17 @@ public class ApiServiceImpl implements ApiService{
                 .header("Content-Type", "application/json")  // Cabecera indicando que el cuerpo es JSON
                 .POST(BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))  // Método POST con el cuerpo de la petición
                 .build();
-        System.out.println("linea 52");
         // Enviar la petición y recibir la respuesta
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("linea 55");
         System.out.println("response: " + response.body());
 
         // Parsear la respuesta JSON utilizando la clase JSONObject de org.json
         JSONObject jsonResponse = new JSONObject(response.body());
         // Extraer el valor del campo "response" del JSON
         String responseMessage = jsonResponse.getString("response");
-
+        System.out.println("Respuesta IA:" + responseMessage);
+        responseMessage = dBconection.connectToDatabase(responseMessage);
+        System.out.println("Resultado query:" + responseMessage);
         // Retornar el mensaje de la respuesta
         return responseMessage;
     }
@@ -87,5 +90,15 @@ public class ApiServiceImpl implements ApiService{
         System.out.println("Response Code: " + response.statusCode());
         System.out.println(response.body());
         return response.body();
+    }
+
+    public String processMessage(String message){
+        String result = "";
+        if (message.startsWith("DB")) {
+            result = "Quiero que contestes solo con una query sin texto adicional: " + message;
+        } else if (message.startsWith("JSON")) {
+            result = "Contesta solo con un JSON: " + message;
+        }
+        return result;
     }
 }
