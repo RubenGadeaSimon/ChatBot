@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import com.example.chatbot.db.DBconection;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -20,7 +21,9 @@ public class ApiController {
 
     @PostMapping("/customer-request")
     public ResponseEntity<?> handleCustomerRequest(@RequestParam Map<String, String> params) {
+        Map<String,String> map = new HashMap<>();
         String messageFromAI ="";
+        String responseMessage = "";
         try {
             // Mostrar el JSON en la consola
             //System.out.println("Received parameters: " + params);
@@ -34,10 +37,20 @@ public class ApiController {
             String message = params.get("Body"); // Cambia "prompt" por el nombre del campo que esperas
             System.out.println("Extracted message: " + message);
 
-            message= apiService.processMessage(message);
+            map = apiService.processMessage(message);
             // Suponiendo que apiService.customerRequestMessage() y apiService.requestFromTwilio() están definidos en tu servicio
-            messageFromAI = apiService.customerRequestMessage(message);
-            apiService.requestFromTwilio(messageFromAI);
+            System.out.println("resultado del map en controller: " + map.get("resultado"));
+            messageFromAI = apiService.customerRequestMessage(map.get("resultado"));
+            System.out.println("mensaje ia en controller : " + messageFromAI);
+            if(map.get("tipo").equals("DB")){
+                System.out.println("el tipo es BD");
+                responseMessage = dBconection.connectToDatabase(messageFromAI);
+            } else if (map.get("tipo").equals("GIT")) {
+                System.out.println("el tipo es GIT");
+                responseMessage = apiService.connectToGithub(messageFromAI);
+            }
+            System.out.println("responsemessage en controller: " + responseMessage);
+            apiService.requestFromTwilio(responseMessage);
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -94,5 +107,6 @@ public class ApiController {
         }
         return ResponseEntity.status(200).body(resp);
     }
+
 
 }

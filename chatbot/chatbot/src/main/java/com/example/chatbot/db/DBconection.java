@@ -1,14 +1,28 @@
 package com.example.chatbot.db;
+import com.example.chatbot.business.services.ApiServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
+import com.example.chatbot.business.ApiService;
 
 public class DBconection {
+    private static final String TOKEN = "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";
+
+
 
     // Método que se conecta a la base de datos y accede a la tabla cliente
     public String connectToDatabase(String message) {
@@ -58,5 +72,8 @@ public class DBconection {
 
         return response;
     }
+
+
+
 }
 
