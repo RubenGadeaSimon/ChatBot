@@ -16,7 +16,7 @@ public class DBconection {
         // Configuración de la conexión
         String url = "jdbc:postgresql://localhost:5432/mydb";  // URL de la base de datos
         String user = "postgres";                             // Usuario de la base de datos
-        String password = "";                    // Contraseña del usuario
+        String password = "root";                    // Contraseña del usuario
 
         Connection conn = null;
         Statement stmt = null;
