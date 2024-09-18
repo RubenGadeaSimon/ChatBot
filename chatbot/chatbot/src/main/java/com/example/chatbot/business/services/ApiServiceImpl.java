@@ -117,6 +117,7 @@ public class ApiServiceImpl implements ApiService{
     }
 
     public void requestFromTwilio(String messageReceived) {
+        System.out.println("Entra a twilio method");
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         Message message = Message.creator(
                         new com.twilio.type.PhoneNumber("whatsapp:+34685571010"),
@@ -152,7 +153,7 @@ public class ApiServiceImpl implements ApiService{
             result = "Contesta solo con un JSON: " + message;
             type="JSON";
         } else if (message.startsWith("GIT")) {
-            result = "Contesta a esto solo proporcionando el metodo y url necesarios (solo eparados por una coma) para realizar la siguiente peticion a la API de github <METODO>,<URL> : " + message;
+            result = "Contesta a esto solo proporcionando el metodo y url necesarios(con https://) (solo eparados por una coma) para realizar la siguiente peticion a la API de github, supon que tengo ya acceso con un token autorizado. No quiero query params en la url El formato es: <METODO>,<URL>  No devuelvas nada mas que se salga del formato. : " + message;
             type = "GIT";
         }
 
