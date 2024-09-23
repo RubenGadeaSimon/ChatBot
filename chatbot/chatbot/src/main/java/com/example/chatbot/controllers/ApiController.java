@@ -97,7 +97,7 @@ public class ApiController {
                 String value = entry.getValue();
                 System.out.println("Key: " + key + ", Value: " + value + ", Type of Value: " + value.getClass().getName());
             }
-            // Extraer el mensaje del parámetro
+            // Extraer el mensaje del parámetrooo
             String message = params.get("query");
 
             dBconection.connectToDatabase(message);
