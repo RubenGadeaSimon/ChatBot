@@ -35,8 +35,8 @@ public class ApiServiceImpl implements ApiService{
 
     // URL del servicio REST
     //@Value("${ollama.url}")
-    //private String url = "http://ollama.paco-namespace.svc.cluster.local:11434/api/generate";
-    private String url = "http://localhost:11434/api/generate";
+    private String url = "http://ollama.paco-namespace.svc.cluster.local:11434/api/generate";
+    //private String url = "http://localhost:11434/api/generate";
     private String urlHola= "http://ollama.paco-namespace.svc.cluster.local:11434";
 
     public static boolean isShaFirst(JsonNode inputJson) {
