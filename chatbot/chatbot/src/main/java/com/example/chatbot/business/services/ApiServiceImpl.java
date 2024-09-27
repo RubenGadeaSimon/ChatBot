@@ -1,6 +1,10 @@
 package com.example.chatbot.business.services;
 
 import com.example.chatbot.db.DBconection;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,7 +30,7 @@ public class ApiServiceImpl implements ApiService{
     @Value("${app.twilio.authtoken}")
     private String AUTH_TOKEN;
 
-    private static final String TOKEN = "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";
+    private static final String TOKEN = "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";
 
 
     // URL del servicio REST
@@ -35,10 +39,70 @@ public class ApiServiceImpl implements ApiService{
     private String url = "http://localhost:11434/api/generate";
     private String urlHola= "http://ollama.paco-namespace.svc.cluster.local:11434";
 
+    public static boolean isShaFirst(JsonNode inputJson) {
+        if (inputJson.has("sha")) {
+            // Verifica si "sha" es la primera clave
+            String firstField = inputJson.fieldNames().next();
+            return "sha".equals(firstField);
+        }
+        return false; // No contiene "sha"
+    }
+
+    public static boolean isUrlFirst(JsonNode inputJson) {
+        if (inputJson.has("url")) {
+            // Verifica si "url" es la primera clave
+            String firstField = inputJson.fieldNames().next();
+            return "url".equals(firstField);
+        }
+        return false; // No contiene "url"
+    }
+
+    public ObjectNode depurarJson (JsonNode jsonNode){
+        ObjectNode filteredNode = (ObjectNode) jsonNode;
+        try{
+            //PIDES TODAS LAS PR
+            if (isUrlFirst(jsonNode)){
+                System.out.println("VALOR DE JSONNODE: " + jsonNode);
+                filteredNode.removeAll();
+                filteredNode.put("url", jsonNode.get("url").asText());
+                filteredNode.put("number", jsonNode.get("number").asInt());
+                filteredNode.put("state", jsonNode.get("state").asText());
+                filteredNode.put("title", jsonNode.get("title").asText());
+                filteredNode.put("user.login", jsonNode.get("user").get("login").asText());
+                filteredNode.put("created_at", jsonNode.get("created_at").asText());
+                filteredNode.put("head.sha", jsonNode.get("head").get("sha").asText());
+            }
+            // Verifica si el JSON contiene la clave "sha" (PIDES UNA PR CONCRETA)
+            else if (isShaFirst(jsonNode)) {
+                filteredNode.remove("blob_url");
+                filteredNode.remove("raw_url");
+                filteredNode.remove("contents_url");
+            }
+        }catch(Exception e){
+            System.out.println("error en depurarjson: " + e.getMessage());
+        }
+
+        return filteredNode;
+    }
+
     public String formatJson(String jsonResponse) {
-        // Limitar el tamaño del JSON a 500 caracteres
-        if (jsonResponse.length() > 500) {
-            jsonResponse = jsonResponse.substring(0, 500);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String concatenada = "";
+            JsonNode jsonNode = objectMapper.readTree(jsonResponse);//array de jsons
+            ArrayNode arrayNode = (ArrayNode) jsonNode;
+            for (JsonNode element : arrayNode) {
+                ObjectNode filteredNode = depurarJson(element);
+                concatenada += filteredNode.toString();
+            }
+            jsonResponse = concatenada;
+        } catch (Exception e) {
+            System.out.println("Error en formatjson: " + e.getMessage());
+        }
+
+        // Limitar el tamaño del JSON a 1000 caracteres
+        if (jsonResponse.length() > 1000) {
+            jsonResponse = jsonResponse.substring(0, 1000);
         }
 
         // Eliminar llaves y comillas
@@ -153,7 +217,7 @@ public class ApiServiceImpl implements ApiService{
             result = "Contesta solo con un JSON: " + message;
             type="JSON";
         } else if (message.startsWith("GIT")) {
-            result = "Contesta a esto solo proporcionando el metodo y url necesarios(con https://) (solo eparados por una coma) para realizar la siguiente peticion a la API de github, supon que tengo ya acceso con un token autorizado. No quiero query params en la url El formato es: <METODO>,<URL>  No devuelvas nada mas que se salga del formato. : " + message;
+            result = "Contesta solo proporcionando el metodo y url <METODO>,<URL> para realizar la siguiente peticion a la API de github: " + message;
             type = "GIT";
         }
 
