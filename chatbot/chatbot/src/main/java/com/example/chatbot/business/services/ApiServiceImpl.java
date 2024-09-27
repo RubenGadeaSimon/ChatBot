@@ -26,13 +26,13 @@ public class ApiServiceImpl implements ApiService{
     @Value("${app.twilio.authtoken}")
     private String AUTH_TOKEN;
 
-    private static final String TOKEN = "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";
+    private static final String TOKEN = "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";
 
 
     // URL del servicio REST
     //@Value("${ollama.url}")
-    //private String url = "http://ollama.paco-namespace.svc.cluster.local:11434/api/generate";
-    private String url = "http://localhost:11434/api/generate";
+    private String url = "http://ollama.paco-namespace.svc.cluster.local:11434/api/generate";
+    //private String url = "http://localhost:11434/api/generate";
     private String urlHola= "http://ollama.paco-namespace.svc.cluster.local:11434";
 
     public String formatJson(String jsonResponse) {
@@ -152,7 +152,7 @@ public class ApiServiceImpl implements ApiService{
             result = "Contesta solo con un JSON: " + message;
             type="JSON";
         } else if (message.startsWith("GIT")) {
-            result = "Contesta a esto solo proporcionando el metodo y url necesarios (solo eparados por una coma) para realizar la siguiente peticion a la API de github <METODO>,<URL> : " + message;
+            result = "Contesta solo proporcionando el metodo y url (<METODO>,<URL>) para realizar la siguiente peticion a la API de github: " + message;
             type = "GIT";
         }
 
