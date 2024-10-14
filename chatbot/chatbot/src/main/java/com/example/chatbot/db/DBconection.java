@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import com.example.chatbot.business.ApiService;
 
 public class DBconection {
+    // Token de seguridad. Invalidar al acabar
     private static final String TOKEN = "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";
 
 
@@ -28,9 +29,9 @@ public class DBconection {
     public String connectToDatabase(String message) {
         String response="";
         // Configuración de la conexión
-        String url = "jdbc:postgresql://localhost:5432/mydb";  // URL de la base de datos
+        String url = "jdbc:postgresql://172.30.9.121:30625/mydb";  // URL de la base de datos
         String user = "postgres";                             // Usuario de la base de datos
-        String password = "root";                    // Contraseña del usuario
+        String password = "postgres";                    // Contraseña del usuario
 
         Connection conn = null;
         Statement stmt = null;
@@ -48,12 +49,20 @@ public class DBconection {
 
             // Procesar los resultados de la consulta
             while (rs.next()) {
-                String dni = rs.getString("dni");
-                String nombre = rs.getString("nombre");
-                String salario = rs.getString("salario");
+                // Iterar sobre el número de columnas en el ResultSet
+                int columnCount = rs.getMetaData().getColumnCount();
+                StringBuilder row = new StringBuilder();
 
-                System.out.println("DNI: " + dni + ", Nombre: " + nombre + ", Salario: " + salario);
-                response += "DNI: " + dni + ", Nombre: " + nombre + ", Salario: " + salario + "\n";
+                for (int i = 1; i <= columnCount; i++) {
+                    // Obtener el valor de la columna actual
+                    Object value = rs.getObject(i);
+                    // Añadir el valor al StringBuilder, separado por un espacio
+                    row.append(value).append(" ");
+                }
+
+                // Imprimir la fila completa
+                System.out.println(row.toString().trim());  // .trim() elimina el espacio extra al final
+                response += row.toString().trim() + "\n";
             }
 
 

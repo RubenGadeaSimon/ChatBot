@@ -257,5 +257,3 @@ public class ApiServiceImpl implements ApiService{
         return response;
     }
 }
-
-// Hola

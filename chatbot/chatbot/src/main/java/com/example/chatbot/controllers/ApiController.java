@@ -66,12 +66,6 @@ public class ApiController {
         return ResponseEntity.status(200).body("Hola mundo");
     }
 
-    @PostMapping("/holamundo")
-    public ResponseEntity<?> holamundo2() {
-        System.out.println("hola mundo2");
-        return ResponseEntity.status(200).body("Hola mundo");
-    }
-
     @GetMapping("/holaollama")
     public ResponseEntity<?> holaollama() {
         System.out.println("hola ollama");
