@@ -26,7 +26,7 @@ public class ApiController {
         String responseMessage = "";
         try {
             // Mostrar el JSON en la consola
-            //System.out.println("Received parameters: " + params);
+            System.out.println("Received parameters: " + params);
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
@@ -34,11 +34,12 @@ public class ApiController {
             }
 
             // Extraer el mensaje del parámetro
-            String message = params.get("Body"); // Cambia "prompt" por el nombre del campo que esperas
+            String message = params.get("Body");
+            String userNumber = params.get("WaId");
             System.out.println("Extracted message: " + message);
 
             map = apiService.processMessage(message);
-            // Suponiendo que apiService.customerRequestMessage() y apiService.requestFromTwilio() están definidos en tu servicio
+
             System.out.println("resultado del map en controller: " + map.get("resultado"));
             messageFromAI = apiService.customerRequestMessage(map.get("resultado"));
             System.out.println("mensaje ia en controller : " + messageFromAI);
@@ -48,16 +49,18 @@ public class ApiController {
             } else if (map.get("tipo").equals("GIT")) {
                 System.out.println("el tipo es GIT");
                 responseMessage = apiService.connectToGithub(messageFromAI);
+            }else{
+                responseMessage = messageFromAI;
             }
             System.out.println("responsemessage en controller: " + responseMessage);
-            apiService.requestFromTwilio(responseMessage);
+            apiService.requestFromTwilio(responseMessage, userNumber);
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             System.out.println("Excepcion: " + e);
             return ResponseEntity.status(500).body("Internal Server Error");
         }
-        return ResponseEntity.ok("El mensaje es: " + messageFromAI);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/holamundo")

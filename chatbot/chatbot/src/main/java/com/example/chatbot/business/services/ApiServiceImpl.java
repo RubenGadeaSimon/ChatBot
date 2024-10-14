@@ -35,7 +35,7 @@ public class ApiServiceImpl implements ApiService{
 
     // URL del servicio REST
     //@Value("${ollama.url}")
-    private String url = "http://ollama.paco-namespace.svc.cluster.local:11434/api/generate";
+    private String url = "http://ollama.paco-namespace.svc.cluster.local:11434/api/generate";//ollama k8s
     //private String url = "http://localhost:11434/api/generate";
     private String urlHola= "http://ollama.paco-namespace.svc.cluster.local:11434";
 
@@ -180,11 +180,12 @@ public class ApiServiceImpl implements ApiService{
         return responseMessage;
     }
 
-    public void requestFromTwilio(String messageReceived) {
+    public void requestFromTwilio(String messageReceived, String userNumber) {
         System.out.println("Entra a twilio method");
+        userNumber = "whatsapp:+" + userNumber;
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         Message message = Message.creator(
-                        new com.twilio.type.PhoneNumber("whatsapp:+34685571010"),
+                        new com.twilio.type.PhoneNumber(userNumber),
                         new com.twilio.type.PhoneNumber("whatsapp:+14155238886"),
                         messageReceived)
                         .create();
@@ -219,6 +220,8 @@ public class ApiServiceImpl implements ApiService{
         } else if (message.startsWith("GIT")) {
             result = "Contesta solo proporcionando el metodo y url <METODO>,<URL> para realizar la siguiente peticion a la API de github: " + message;
             type = "GIT";
+        }else{
+            result = message;
         }
 
         map.put("resultado", result);
